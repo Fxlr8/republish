@@ -8,7 +8,10 @@ const config = {
 	replicationOptions: {
 		plugin: 'wal2json',
 		slot: 'mySlot',
-		filter: 'public.messages'
+		filter: [
+			'schema.table_1',
+			'schema.table_2'
+		]
 	},
 	pubsub: {
 		host: 'nats://localhost:4222'

@@ -7,6 +7,8 @@ export default class Republish extends EventEmitter {
 		super()
 		this.pubsub = pubsub
 		this.conf = conf
+
+		this.filter = conf.replicationOptions.filter.join(',')
 	}
 
 	init() {
@@ -18,6 +20,7 @@ export default class Republish extends EventEmitter {
 			'--plugin=' + this.conf.replicationOptions.plugin,
 			'--dbname=' + this.conf.db.database,
 			'--start',
+			'--option=filter-tables=' + this.filter,
 			'-f-'
 		], { detached: false })
 
@@ -39,9 +42,9 @@ export default class Republish extends EventEmitter {
 				}
 			})
 
-		// this.spawn.stderr.on('data', (data) => {
-		// 	console.error(`child stderr:\n${data}`)
-		// })
+		this.spawn.stderr.on('data', (data) => {
+			console.error(`child stderr:\n${data}`)
+		})
 
 		this.spawn.on('close', (code) => {
 			this.emit((code === 0) ? 'stop' : 'error', 'pg_recvlogical exited with code: ' + code)
@@ -57,11 +60,10 @@ export default class Republish extends EventEmitter {
 	}
 
 	handleDbMessage = (line) => {
-		if (line.table !== 'messages') {
-			return
-		}
 		const obj = this.lineToObject(line)
 		console.log(obj)
+		const key = `${obj.table}:${obj.id}`
+		this.pubsub.publish(key, JSON.stringify(obj))
 	}
 
 
