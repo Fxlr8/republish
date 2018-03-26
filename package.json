@@ -1,0 +1,39 @@
+{
+  "name": "republish",
+  "version": "1.0.0",
+  "description": "a tool for publishing postgresql replication stream to pub/sub server",
+  "main": "index.js",
+  "dependencies": {
+    "ldjson-stream": "^1.2.1",
+    "nats": "^0.8.4"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "webpack": "^4.0.0-beta.3",
+    "webpack-cli": "^2.0.13"
+  },
+  "scripts": {
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fxlr8/republish.git"
+  },
+  "keywords": [
+    "postgresql",
+    "pub/sub",
+    "replication",
+    "streaming"
+  ],
+  "author": "George Turkin (Fxlr8)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Fxlr8/republish/issues"
+  },
+  "homepage": "https://github.com/Fxlr8/republish#readme"
+}
