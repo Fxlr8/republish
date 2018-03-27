@@ -1,9 +1,12 @@
+import config from 'config'
 import NATS from 'nats'
 import Republish from './republish.js'
-import config from '../config/config.js'
 
 console.log('connecting to PubSub server...')
-const nats = NATS.connect()
-const publisher = new Republish(nats, config)
+const pubSubConf = config.get('pubsub')
+const nats = NATS.connect(pubSubConf.host)
+
+const dbConfig = config.get('db')
+const publisher = new Republish(nats, dbConfig)
 publisher.init()
 console.log('done')

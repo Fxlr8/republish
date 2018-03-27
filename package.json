@@ -4,6 +4,7 @@
   "description": "a tool for publishing postgresql replication stream to pub/sub server",
   "main": "index.js",
   "dependencies": {
+    "config": "^1.30.0",
     "ldjson-stream": "^1.2.1",
     "nats": "^0.8.4"
   },

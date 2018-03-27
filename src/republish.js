@@ -20,11 +20,11 @@ export default class Republish extends EventEmitter {
 	init() {
 		console.log(this.conf)
 		this.spawn = spawn('pg_recvlogical', [
-			'--host=' + this.conf.db.host,
-			'--username=' + this.conf.db.user,
+			'--host=' + this.conf.host,
+			'--username=' + this.conf.user,
 			'--slot=' + this.conf.replicationOptions.slot,
 			'--plugin=' + this.conf.replicationOptions.plugin,
-			'--dbname=' + this.conf.db.database,
+			'--dbname=' + this.conf.database,
 			'--start',
 			'--option=add-tables=' + this.filter,
 			'-f-'
@@ -60,7 +60,7 @@ export default class Republish extends EventEmitter {
 	handleDbMessage = (line) => {
 		const obj = this.lineToObject(line)
 		const key = this.keyFromObject(obj)
-		console.log(key)
+		//console.log(key)
 		this.pubsub.publish(key, JSON.stringify(obj))
 	}
 
