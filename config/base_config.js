@@ -9,9 +9,15 @@ const config = {
 		plugin: 'wal2json',
 		slot: 'mySlot',
 		filter: [
-			'schema.table_1',
-			'schema.table_2'
-		]
+			{
+				schemaName: 'public',
+				tables: ['messages', 'users']
+			}
+		],
+		idFromObject: {
+			messages:	['table', 'id', 'peer_user_id', 'user_id'],
+			users: ['table', 'id']
+		}
 	},
 	pubsub: {
 		host: 'nats://localhost:4222'

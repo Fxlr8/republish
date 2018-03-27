@@ -7,8 +7,14 @@ export default class Republish extends EventEmitter {
 		super()
 		this.pubsub = pubsub
 		this.conf = conf
+		this.idFromObject = conf.replicationOptions.idFromObject
 
-		this.filter = conf.replicationOptions.filter.join(',')
+		// generate filter value once
+		this.filter = conf.replicationOptions.filter.reduce((tables, schema) => {
+			// join schema and table names in schema.table form
+			const schemaTables = schema.tables.map(t => `${schema.schemaName}.${t}`)
+			return tables.concat(schemaTables)
+		}, []).join(',')
 	}
 
 	init() {
@@ -20,7 +26,7 @@ export default class Republish extends EventEmitter {
 			'--plugin=' + this.conf.replicationOptions.plugin,
 			'--dbname=' + this.conf.db.database,
 			'--start',
-			'--option=filter-tables=' + this.filter,
+			'--option=add-tables=' + this.filter,
 			'-f-'
 		], { detached: false })
 
@@ -42,13 +48,20 @@ export default class Republish extends EventEmitter {
 				}
 			})
 
-		this.spawn.stderr.on('data', (data) => {
-			console.error(`child stderr:\n${data}`)
-		})
+		// this.spawn.stderr.on('data', (data) => {
+		// 	console.error(`child stderr:\n${data}`)
+		// })
 
 		this.spawn.on('close', (code) => {
 			this.emit((code === 0) ? 'stop' : 'error', 'pg_recvlogical exited with code: ' + code)
 		})
+	}
+
+	handleDbMessage = (line) => {
+		const obj = this.lineToObject(line)
+		const key = this.keyFromObject(obj)
+		console.log(key)
+		this.pubsub.publish(key, JSON.stringify(obj))
 	}
 
 	lineToObject(line) {
@@ -59,13 +72,13 @@ export default class Republish extends EventEmitter {
 		return obj
 	}
 
-	handleDbMessage = (line) => {
-		const obj = this.lineToObject(line)
-		console.log(obj)
-		const key = `${obj.table}:${obj.id}`
-		this.pubsub.publish(key, JSON.stringify(obj))
+	keyFromObject(obj) {
+		if (this.idFromObject[obj.table]) {
+			// construct a pubsub key using object values from config
+			return this.idFromObject[obj.table].map(k => obj[k]).join(':')
+		}
+		return `${obj.table}:${obj.id}`
 	}
-
 
 	createSlot(slot) {
 		execFile(this.binPath + '/pg_recvlogical', [
