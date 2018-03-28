@@ -2,7 +2,7 @@ FROM node:alpine
 
 RUN apk update \
     && apk add -f --no-cache \
-		postgresql-10
+		postgresql
 
 
 RUN mkdir -p /opt/app
