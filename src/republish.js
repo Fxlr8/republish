@@ -75,9 +75,9 @@ export default class Republish extends EventEmitter {
 	keyFromObject(obj) {
 		if (this.idFromObject[obj.table]) {
 			// construct a pubsub key using object values from config
-			return this.idFromObject[obj.table].map(k => obj[k]).join(':')
+			return this.idFromObject[obj.table].map(k => obj[k]).join('.')
 		}
-		return `${obj.table}:${obj.id}`
+		return `${obj.table}.${obj.id}`
 	}
 
 	createSlot(slot) {
