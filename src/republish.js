@@ -18,7 +18,6 @@ export default class Republish extends EventEmitter {
 	}
 
 	init() {
-		console.log(this.conf)
 		this.spawn = spawn('pg_recvlogical', [
 			'--host=' + this.conf.host,
 			'--username=' + this.conf.user,
