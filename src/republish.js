@@ -26,6 +26,7 @@ export default class Republish extends EventEmitter {
 			'--plugin=' + this.conf.replicationOptions.plugin,
 			'--dbname=' + this.conf.database,
 			'--start',
+			'--option=include-types=false',
 			'--option=add-tables=' + this.filter,
 			'-f-'
 		], { detached: false })
