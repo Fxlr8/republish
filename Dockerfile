@@ -5,10 +5,6 @@ RUN apk update \
 		postgresql-10
 
 
-# defaults to production, compose overrides this to development on build and run
-# ARG NODE_ENV=production
-# ENV NODE_ENV $NODE_ENV
-
 RUN mkdir -p /opt/app
 
 # install dependencies first, in a different location for easier app bind mounting for local development
@@ -24,7 +20,9 @@ WORKDIR /opt/app
 
 RUN npm run build
 
-
+# defaults to production, compose overrides this to development on build and run
+ARG NODE_ENV=production
+ENV NODE_ENV $NODE_ENV
 
 # run as node user instead of root for security reasons
 USER node
