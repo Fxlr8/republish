@@ -14,8 +14,7 @@
 				}
 			],
 			"idFromObject": {
-				"messages":	["table", "id", "peer_user_id", "user_id"],
-				"users": ["table", "id"]
+				"messages":	["table", "id", "peer_user_id", "user_id"]
 			}
 		}
 	},

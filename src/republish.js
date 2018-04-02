@@ -48,9 +48,9 @@ export default class Republish extends EventEmitter {
 				}
 			})
 
-		// this.spawn.stderr.on('data', (data) => {
-		// 	console.error(`child stderr:\n${data}`)
-		// })
+		this.spawn.stderr.on('data', (data) => {
+			console.error(`child stderr:\n${data}`)
+		})
 
 		this.spawn.on('close', (code) => {
 			this.emit((code === 0) ? 'stop' : 'error', 'pg_recvlogical exited with code: ' + code)
@@ -81,6 +81,7 @@ export default class Republish extends EventEmitter {
 	}
 
 	createSlot(slot) {
+		console.log(`creating replication slot ${slot}`)
 		execFile(this.binPath + '/pg_recvlogical', [
 			'--slot=' + slot,
 			'--create-slot',
@@ -91,13 +92,13 @@ export default class Republish extends EventEmitter {
 			timeout: this.timeout
 		}, (error, stdout, stderr) => {
 			if (error) {
-				const slotAlreadyExists = error.message.contains('already exists') === -1
 				return new Error('Failed to create slot: ' + stderr)
 			}
 		})
 	}
 
 	dropSlot(slot) {
+		console.log(`dropiing replication slot ${slot}`)
 		execFile(this.binPath + '/pg_recvlogical', [
 			'--slot=' + slot,
 			'--drop-slot',
